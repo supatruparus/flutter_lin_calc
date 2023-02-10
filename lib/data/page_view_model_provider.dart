@@ -27,24 +27,18 @@ class ViewModelNotifier extends StateNotifier {
   onPickWidth(double width) async {
     ref.read(rulonParamsProvider.notifier).update((state) => state.copyWith(width: width));
     print('width: ${_rulonParams.width}');
-    if(_rulonParams.width !=0 && _rulonParams.vitki !=0 && _rulonParams.radius !=0){
-      ref.read(resultProvider.notifier).calculatePloshad(_rulonParams);
-    }
+    result.calculatePloshad(_rulonParams);
   }
 
   onPickVitki(int vitki) {
     ref.read(rulonParamsProvider.notifier).update((state) => state.copyWith(vitki: vitki));
     print('vitki: ${_rulonParams.vitki}');
-    if(_rulonParams.width !=0 && _rulonParams.vitki !=0 && _rulonParams.radius !=0){
-      ref.read(resultProvider.notifier).calculatePloshad(_rulonParams);
-    }
+    result.calculatePloshad(_rulonParams);
   }
 
   onPickRadius(double radius) {
     ref.read(rulonParamsProvider.notifier).update((state) => state.copyWith(radius: radius));
     print('radius: ${_rulonParams.radius}');
-    if(_rulonParams.width !=0 && _rulonParams.vitki !=0 && _rulonParams.radius !=0){
-      ref.read(resultProvider.notifier).calculatePloshad(_rulonParams);
-    }
+    result.calculatePloshad(_rulonParams);
   }
 }

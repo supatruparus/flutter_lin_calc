@@ -45,12 +45,15 @@ class _Ploshad extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     TextStyle textStyle = ref.watch(theme.select((value) => value.textStyle));
 
-    final double ploshad = ref.watch(resultProvider).ploshad;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [Text('${Strings.ploshad}: ', style: textStyle),
-      Text('${ploshad.toStringAsFixed(3)}м²', style: textStyle,)
-      ],
+    final double? ploshad = ref.watch(resultProvider).ploshad;
+    String text = ploshad!=-1? '${ploshad!.toStringAsFixed(3)}м²' : '--';
+    return FittedBox(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [Text('${Strings.ploshad}: ', style: textStyle),
+        Text(text, style: textStyle,)
+        ],
+      ),
     );
   }
 }
@@ -59,17 +62,17 @@ class _Length extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    double dlina = ref.watch(resultProvider).length;
+    double? dlina = ref.watch(resultProvider).length;
     TextStyle textStyle = ref.watch(theme.select((value) => value.textStyle));
-    return SizedBox(
-      width: double.infinity,
+    String text = dlina!=-1? '${dlina!.toStringAsFixed(3)}м' : '--';
+    return FittedBox(
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
             '${Strings.length}: ', style: textStyle),
-          Text('${dlina.toStringAsFixed(3)}м', style:  textStyle,)
+          Text(text, style:  textStyle,)
         ],
       ),
     );

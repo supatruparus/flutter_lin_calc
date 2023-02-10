@@ -1,7 +1,13 @@
 import 'package:flutter_lin_calc/domain/models/rulon_params.dart';
 
 class Result{
-  Result({required this.ploshad, required this.length});
+  Result({ this.ploshad = -1,  this.length = -1});
+
+  @override
+  String toString() {
+    return 'Result{ploshad: $ploshad, length: $length}';
+  }
+
   final double ploshad;
   final double length;
 

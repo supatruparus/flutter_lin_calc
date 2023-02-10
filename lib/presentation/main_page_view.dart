@@ -30,11 +30,14 @@ class MyHomePage extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: 50, right: 50),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+
                   children: [
                     Center(child: Align(
                       alignment: Alignment.center,
-                      child: Text(Strings.title,textAlign: TextAlign.center, style: ref.read(theme).textStyle.copyWith(
-                        fontSize: 40, ),),
+                      child: FittedBox(
+                        child: Text(Strings.title,textAlign: TextAlign.center,maxLines: 2, style: ref.read(theme).textStyle.copyWith(
+                          fontSize: 40, ),),
+                      ),
                     )),
                     _WidthSetter(viewModel: viewModel),
                     _VitkiSetter(viewModel: viewModel),
