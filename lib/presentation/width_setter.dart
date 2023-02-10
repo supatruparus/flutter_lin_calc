@@ -3,7 +3,6 @@ part of 'main_page_view.dart';
 
 class _WidthSetter extends StatelessWidget {
   const _WidthSetter({
-    super.key,
     required this.viewModel,
   });
 
@@ -22,12 +21,12 @@ class _WidthSetter extends StatelessWidget {
         ),
         Consumer(
             builder: (context, ref, child) {
-              return ScrollInput(
+              return ScrollInputV3(
                   values: List.generate(20, (index) => (index/2).toString()),
                   textStyle: ref.watch(theme.select((value) => value.textStyle)),
-                  onPageChanged: (page){
-                    double value = (page/2);
-                    viewModel.onPickWidth(value);},
+                  onValueChanged: (string){
+                    double width = double.parse(string);
+                    viewModel.onPickWidth(width);},
 
                   controller: viewModel.widthController);
             }

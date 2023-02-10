@@ -18,9 +18,11 @@ class _VitkiSetter extends StatelessWidget {
         ),
         Consumer(
             builder: (context, ref, child) {
-              return ScrollInput(
-                onPageChanged: (page) {
-                  viewModel.onPickVitki(page);
+              return ScrollInputV3(
+                onValueChanged: ( string) {
+                  int vitki = double.parse(string).toInt();
+
+                  viewModel.onPickVitki(vitki);
                 },
                   values: List.generate(100, (index) =>index.toString()),
                   textStyle: ref.watch(theme.select((value) => value.textStyle)),

@@ -20,11 +20,12 @@ class _RadiusSetter extends StatelessWidget {
           );
         }),
         Consumer(builder: (context, ref, child) {
-          return ScrollInput(
-              onPageChanged: (page) {
-                viewModel.onPickRadius(page/10);
+          return ScrollInputV3(
+              onValueChanged: (string) {
+                double radius = double.parse(string);
+                viewModel.onPickRadius(radius);
               },
-              values: List.generate(1000, (index) => (index / 10).toString()),
+              values: List.generate(10000, (index) => (index / 10).toString()),
               textStyle: ref.watch(theme.select((value) => value.textStyle)),
               controller: viewModel.radiusController);
         })
