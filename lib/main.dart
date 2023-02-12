@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           scaffoldBackgroundColor: MyColors.bgGrey,
+          colorScheme: ColorScheme.dark().copyWith(primary: MyColors.yelowtext,error: MyColors.yelowtext,secondary: MyColors.yelowtext)
         ),
         home: const MyHomePage(),
       ),

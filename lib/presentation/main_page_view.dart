@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../consts/strings.dart';
 import '../data/page_view_model_provider.dart';
 import '../data/theme_provider.dart';
+import 'package:flutter_lin_calc/utils/extensions.dart';
+
 part 'radius_setter.dart';
 part 'width_setter.dart';
 part 'vitki_setter.dart';
