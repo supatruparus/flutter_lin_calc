@@ -16,6 +16,8 @@ class ViewModelNotifier extends StateNotifier {
   PageController widthController = PageController(initialPage: 0);
   PageController vitkiController = PageController(initialPage: 0);
   PageController radiusController = PageController(initialPage: 0);
+
+
   ResultNotifier get result => ref.read(resultProvider.notifier);
 
   set _rulonParams(RulonParams params) {

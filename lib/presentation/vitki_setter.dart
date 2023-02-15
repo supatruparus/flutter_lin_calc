@@ -19,6 +19,7 @@ class _VitkiSetter extends StatelessWidget {
         Consumer(
             builder: (context, ref, child) {
               return ScrollInputV3(
+                reverse: false,
                 onValueChanged: ( string) {
                   int vitki = double.parse(string).toInt();
 

@@ -5,18 +5,16 @@ part of 'main_page_view.dart';
 
     @override
     Widget build(BuildContext context) {
-      return Padding(
-
+      return Container(
+        // color: Colors.red,
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _Title(),
-            SizedBox(height: 20,),
-            _Ploshad(),
-            SizedBox(height: 20,),
+            // const _Title(),
+            const _Ploshad(),
             _Length(),
 
 

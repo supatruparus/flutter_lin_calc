@@ -44,7 +44,7 @@ class ScrollInputV3 extends StatelessWidget {
           child: Center(
             child: Consumer(builder: (context, ref, child) {
               return PageView(
-                reverse: true,
+                reverse: reverse,
                 onPageChanged: (page) {
                   String string = values[page.toInt()];
                   onValueChanged?.call(string);
@@ -70,9 +70,7 @@ class ScrollInputV3 extends StatelessWidget {
                                       }
                                     });
 
-                                    return
-                                      isEnabled?
-                                      TextField(
+                                    var textField = TextField(
                                       showCursor: true,
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
@@ -81,11 +79,10 @@ class ScrollInputV3 extends StatelessWidget {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-
-
-                                      },
+                                                            },
 
                                       onTapOutside: (event){
+                                          textController.text = textController.text.replaceAll(',', '.');
                                         String textfieldText = textController.text;
                                         if(focusNode.hasFocus){
                                           focusNode.unfocus();
@@ -105,7 +102,10 @@ class ScrollInputV3 extends StatelessWidget {
                                         }
 
                                       },
-                                      controller: textController, style: textStyle,)
+                                      controller: textController, style: textStyle,);
+                                    return
+                                      isEnabled?
+                                      textField
                                       : Text((values[index]).toString(), style: textStyle,)
                                     ;
                                   }
