@@ -22,6 +22,7 @@ class _WidthSetter extends StatelessWidget {
         Consumer(
             builder: (context, ref, child) {
               return ScrollInputV3(
+                isEnabled: false,
                   values: List.generate(20, (index) => (index/2).toString()),
                   textStyle: ref.watch(theme.select((value) => value.textStyle)),
                   onValueChanged: (string){

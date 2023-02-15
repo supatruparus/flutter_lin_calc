@@ -11,6 +11,7 @@ class ScrollInputV3 extends StatelessWidget {
       this.textStyle = const TextStyle(),
         this.onUp,
       this.onDown,
+        this.isEnabled = true,
       this.color = Colors.white70,
         this.reverse = false,
       required this.controller,
@@ -26,6 +27,7 @@ class ScrollInputV3 extends StatelessWidget {
   final Function()? onDown;
   final Function()? onUp;
   final bool reverse;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +70,9 @@ class ScrollInputV3 extends StatelessWidget {
                                       }
                                     });
 
-                                    return TextField(
+                                    return
+                                      isEnabled?
+                                      TextField(
                                       showCursor: true,
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
@@ -101,7 +105,9 @@ class ScrollInputV3 extends StatelessWidget {
                                         }
 
                                       },
-                                      controller: textController, style: textStyle,);
+                                      controller: textController, style: textStyle,)
+                                      : Text((values[index]).toString(), style: textStyle,)
+                                    ;
                                   }
                               ),)))
                 ],
