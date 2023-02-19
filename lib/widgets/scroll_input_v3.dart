@@ -11,7 +11,9 @@ class ScrollInputV3 extends StatelessWidget {
       this.textStyle = const TextStyle(),
         this.onUp,
       this.onDown,
+        this.isEnabled = true,
       this.color = Colors.white70,
+        this.reverse = false,
       required this.controller,
       required this.values})
       : super(key: key);
@@ -24,6 +26,8 @@ class ScrollInputV3 extends StatelessWidget {
   final Function(String string)? onValueChanged;
   final Function()? onDown;
   final Function()? onUp;
+  final bool reverse;
+  final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,7 @@ class ScrollInputV3 extends StatelessWidget {
           child: Center(
             child: Consumer(builder: (context, ref, child) {
               return PageView(
+                reverse: reverse,
                 onPageChanged: (page) {
                   String string = values[page.toInt()];
                   onValueChanged?.call(string);
@@ -65,7 +70,8 @@ class ScrollInputV3 extends StatelessWidget {
                                       }
                                     });
 
-                                    return TextField(
+                                    var textField = TextField(
+                                      showCursor: true,
                                       textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
                                       focusNode: focusNode,
@@ -73,26 +79,35 @@ class ScrollInputV3 extends StatelessWidget {
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (value) {
-                                        if(value!= ''){
-                                          print('value: ${double.parse(value)}');
-                                          print(values);
-                                          int page = values.indexOf(double.parse(value).toString());
-                                          if(page != -1){
-                                            print('page: $page');
-                                            controller.jumpToPage(page);
-                                          }else{
-                                            page = values.indexOf(double.parse(value).toInt().toString());
-                                            controller.jumpToPage(page);
-                                          }
+                                                            },
 
+                                      onTapOutside: (event){
+                                          textController.text = textController.text.replaceAll(',', '.');
+                                        String textfieldText = textController.text;
+                                        if(focusNode.hasFocus){
+                                          focusNode.unfocus();
+                                          if(textfieldText!= ''){
+                                            print('value: ${double.parse(textfieldText)}');
+                                            print(values);
+                                            int page = values.indexOf(double.parse(textfieldText).toString());
+                                            if(page != -1){
+                                              print('page: $page');
+                                              controller.jumpToPage(page);
+                                            }else{
+                                              page = values.indexOf(double.parse(textfieldText).toInt().toString());
+                                              controller.jumpToPage(page);
+                                            }
+
+                                          }
                                         }
 
                                       },
-
-                                      onTapOutside: (event){
-                                        focusNode.unfocus();
-                                      },
                                       controller: textController, style: textStyle,);
+                                    return
+                                      isEnabled?
+                                      textField
+                                      : Text((values[index]).toString(), style: textStyle,)
+                                    ;
                                   }
                               ),)))
                 ],

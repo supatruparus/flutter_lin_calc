@@ -25,7 +25,9 @@ class _RadiusSetter extends StatelessWidget {
                 double radius = double.parse(string);
                 viewModel.onPickRadius(radius);
               },
-              values: List.generate(10000, (index) => (index / 10).toString()),
+              values: List.generate(10000, (index) {
+               return (index / 10).toSimpleString();
+              }),
               textStyle: ref.watch(theme.select((value) => value.textStyle)),
               controller: viewModel.radiusController);
         })

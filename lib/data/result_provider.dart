@@ -19,18 +19,30 @@ final resultProvider = StateNotifierProvider<ResultNotifier,Result >((ref) {
 });
 
 class ResultNotifier extends StateNotifier<Result> {
-  ResultNotifier() : super(Result(length: 0, ploshad: 0));
+  ResultNotifier() : super(Result());
 
-  double calculatePloshad(RulonParams params){
-    print('params: ${params.toString()} ');
-    double result = (params.radius*2 + 23)/100*3.15/2*params.vitki*params.width;
-    double length = result/params.width;
-    state = state.copyWith(ploshad: result, length: length);
+   calculatePloshad(RulonParams params){
+     bool haveZeroParam = params.width ==0 || params.vitki ==0 || params.radius ==0;
+    if(!haveZeroParam){
+      double result = (params.radius*2 + 23)/100*3.15/2*params.vitki*params.width;
+      double length = result/params.width;
+      state = state.copyWith(ploshad: result, length: length);
 
-    print('ploshad = $result, dlina = $length');
-    return result;
+
+      return result;
+
+    }else{
+      clear();
+      print(state.toString());
+    }
+
 
   }
+  clear(){
+    state = state.copyWith(ploshad: -1, length: -1);
+  }
+
+
 
 
 
