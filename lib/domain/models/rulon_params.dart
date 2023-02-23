@@ -1,14 +1,14 @@
 class RulonParams{
-  const RulonParams({required this.vitki, required this.radius, required this.width});
+  const RulonParams({this.vitki,this.radius,this.width});
 
   @override
   String toString() {
     return 'RulonParams{vitki: $vitki, radius: $radius, width: $width}';
   }
 
-  final int vitki;
-  final double radius;
-  final double width;
+  final int? vitki;
+  final double? radius;
+  final double? width;
 
   RulonParams copyWith({
     int? vitki,

@@ -9,7 +9,7 @@ import '../domain/models/rulon_params.dart';
 
 
 final rulonParamsProvider = StateProvider<RulonParams>((ref) {
-  return const RulonParams(vitki: 0, radius: 0, width: 1);
+  return const RulonParams();
 });
 
 
@@ -22,18 +22,20 @@ class ResultNotifier extends StateNotifier<Result> {
   ResultNotifier() : super(Result());
 
    calculatePloshad(RulonParams params){
-     bool haveZeroParam = params.width ==0 || params.vitki ==0 || params.radius ==0;
-    if(!haveZeroParam){
-      double result = (params.radius*2 + 23)/100*3.15/2*params.vitki*params.width;
-      double length = result/params.width;
+     bool haveNullParam = params.width==null || params.vitki ==null || params.radius ==null;
+     bool zeroParam = params.width == 0 || params.vitki ==0 || params.radius == 0;
+    if(!haveNullParam && !zeroParam){
+      double result = (params.radius!*2 + 23)/100*3.15/2*params.vitki!*params.width!;
+      double length = result/params.width!;
       state = state.copyWith(ploshad: result, length: length);
 
 
       return result;
 
     }else{
+
       clear();
-      print(state.toString());
+      print('null param or zero');
     }
 
 

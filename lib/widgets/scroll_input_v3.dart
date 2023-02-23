@@ -9,11 +9,11 @@ class ScrollInputV3 extends StatelessWidget {
       this.height = 70,
       this.onValueChanged,
       this.textStyle = const TextStyle(),
-        this.onUp,
+      this.onUp,
       this.onDown,
-        this.isEnabled = true,
+      this.isEnabled = true,
       this.color = Colors.white70,
-        this.reverse = false,
+      this.reverse = false,
       required this.controller,
       required this.values})
       : super(key: key);
@@ -35,10 +35,16 @@ class ScrollInputV3 extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        buildNeumorphicIcon(onTap: (){onUp?.call();
-        controller.previousPage(duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);}),
+        buildNeumorphicIcon(onTap: () {
+          onUp?.call();
+          controller.previousPage(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut);
+        }),
         Container(
-          decoration: const BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.all(Radius.circular(15))),
+          decoration: const BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
           width: width,
           height: height,
           child: Center(
@@ -50,66 +56,72 @@ class ScrollInputV3 extends StatelessWidget {
                   onValueChanged?.call(string);
                 },
                 allowImplicitScrolling: false,
-                clipBehavior: Clip.antiAlias,
                 scrollDirection: Axis.vertical,
                 controller: controller,
                 children: [
                   ...List.generate(
                       values.length,
-                      (index) => SizedBox(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: Center(
-                              child: Builder(
-                                  builder: (context) {
-                                    final textController = TextEditingController(text: (values[index]).toString());
-                                    final focusNode = FocusNode();
-                                    focusNode.addListener(() {
-                                      if(focusNode.hasFocus){
-                                        textController.selection = TextSelection(baseOffset: 0, extentOffset: textController.text.length);
-                                      }
-                                    });
+                      (index) => Center(
+                        child: Builder(builder: (context) {
+                          final textController = TextEditingController(
+                              text: (values[index]).toString());
+                          final focusNode = FocusNode();
+                          focusNode.addListener(() {
+                            if (focusNode.hasFocus) {
+                              textController.selection = TextSelection(
+                                  baseOffset: 0,
+                                  extentOffset: textController.text.length);
+                            }
+                          });
 
-                                    var textField = TextField(
-                                      showCursor: true,
-                                      textAlign: TextAlign.center,
-                                      keyboardType: TextInputType.number,
-                                      focusNode: focusNode,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                      onChanged: (value) {
-                                                            },
-
-                                      onTapOutside: (event){
-                                          textController.text = textController.text.replaceAll(',', '.');
-                                        String textfieldText = textController.text;
-                                        if(focusNode.hasFocus){
-                                          focusNode.unfocus();
-                                          if(textfieldText!= ''){
-                                            print('value: ${double.parse(textfieldText)}');
-                                            print(values);
-                                            int page = values.indexOf(double.parse(textfieldText).toString());
-                                            if(page != -1){
-                                              print('page: $page');
-                                              controller.jumpToPage(page);
-                                            }else{
-                                              page = values.indexOf(double.parse(textfieldText).toInt().toString());
-                                              controller.jumpToPage(page);
-                                            }
-
-                                          }
-                                        }
-
-                                      },
-                                      controller: textController, style: textStyle,);
-                                    return
-                                      isEnabled?
-                                      textField
-                                      : Text((values[index]).toString(), style: textStyle,)
-                                    ;
+                          var textField = TextField(
+                            showCursor: true,
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            focusNode: focusNode,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (string) {
+                              onValueChanged?.call(string);
+                            },
+                            onTapOutside: (event) {
+                              textController.text =
+                                  textController.text.replaceAll(',', '.');
+                              String textfieldText = textController.text;
+                              if (focusNode.hasFocus) {
+                                focusNode.unfocus();
+                                if (textfieldText != '') {
+                                  print(
+                                      'value: ${double.parse(textfieldText)}');
+                                  print(values);
+                                  int page = values.indexOf(
+                                      double.parse(textfieldText)
+                                          .toString());
+                                  if (page != -1) {
+                                    print('page: $page');
+                                    controller.jumpToPage(page);
+                                  } else {
+                                    page = values.indexOf(
+                                        double.parse(textfieldText)
+                                            .toInt()
+                                            .toString());
+                                    controller.jumpToPage(page);
                                   }
-                              ),)))
+                                }
+                              }
+                            },
+                            controller: textController,
+                            style: textStyle,
+                          );
+                          return isEnabled
+                              ? textField
+                              : Text(
+                                  (values[index]).toString(),
+                                  style: textStyle,
+                                );
+                        }),
+                      ))
                 ],
               );
             }),
@@ -117,12 +129,12 @@ class ScrollInputV3 extends StatelessWidget {
         ),
         RotatedBox(
             quarterTurns: 2,
-            child: buildNeumorphicIcon(
-              onTap: () {
-                onDown?.call();
-                controller.nextPage(duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);}
-    )
-            )
+            child: buildNeumorphicIcon(onTap: () {
+              onDown?.call();
+              controller.nextPage(
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeInOut);
+            }))
       ],
     );
   }
