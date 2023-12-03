@@ -14,7 +14,6 @@ class HistoryPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('История'),
-        backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
         child: Padding(

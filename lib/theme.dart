@@ -17,7 +17,14 @@ ThemeData myTheme = ThemeData(
           color: MyColors.yelowtext,
           fontSize: 42,
         )),
+    iconTheme: IconThemeData(color: MyColors.yelowtext),
+    appBarTheme: AppBarTheme(
+        backgroundColor: MyColors.dark,
+        surfaceTintColor: MyColors.yelowtext,
+        titleTextStyle: TextStyle(fontSize: 26, color: MyColors.yelowtext)),
     colorScheme: const ColorScheme.dark().copyWith(
         primary: MyColors.yelowtext,
+        // onPrimary: Colors.red,
+        // onBackground: Colors.red,
         error: MyColors.yelowtext,
         secondary: MyColors.yelowtext));

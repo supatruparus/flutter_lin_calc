@@ -20,6 +20,7 @@ class MyApp extends ConsumerWidget {
         title: 'Flutter Demo',
         theme: myTheme,
         home: PageView(
+          padEnds: false,
           children: const [MyHomePage(), HistoryPage()],
         ),
       ),

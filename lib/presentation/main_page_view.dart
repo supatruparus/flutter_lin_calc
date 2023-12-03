@@ -24,6 +24,7 @@ class MyHomePage extends ConsumerWidget {
     final viewModel = ref.read(viewModelProvider.notifier);
 
     return Scaffold(
+      appBar: AppBar(title: Text(Strings.title)),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,20 +38,6 @@ class MyHomePage extends ConsumerWidget {
                 children: [
                   Column(
                     children: [
-                      Center(
-                          child: Align(
-                        alignment: Alignment.center,
-                        child: FittedBox(
-                          child: Text(
-                            Strings.title,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            style: ref.read(theme).textStyle.copyWith(
-                                  fontSize: 40,
-                                ),
-                          ),
-                        ),
-                      )),
                       _WidthSetter(viewModel: viewModel),
                       _VitkiSetter(viewModel: viewModel),
                       _RadiusSetter(
