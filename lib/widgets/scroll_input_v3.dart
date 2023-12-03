@@ -14,11 +14,9 @@ class ScrollInputV3 extends StatelessWidget {
       this.isEnabled = true,
       this.color = Colors.white70,
       this.reverse = false,
-      required this.controller,
       required this.values})
       : super(key: key);
   final Color color;
-  final PageController controller;
   final List<String> values;
   final TextStyle textStyle;
   final double width;
@@ -31,13 +29,18 @@ class ScrollInputV3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PageController pageController =
+        PageController(initialPage: 0, viewportFraction: 0.6);
+    pageController.addListener(() {
+      debugPrint('page position = ${pageController.page}');
+    });
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         buildNeumorphicIcon(onTap: () {
           onUp?.call();
-          controller.previousPage(
+          pageController.previousPage(
               duration: const Duration(milliseconds: 100),
               curve: Curves.easeInOut);
         }),
@@ -50,6 +53,8 @@ class ScrollInputV3 extends StatelessWidget {
           child: Center(
             child: Consumer(builder: (context, ref, child) {
               return PageView(
+                padEnds: true,
+                pageSnapping: true,
                 reverse: reverse,
                 onPageChanged: (page) {
                   String string = values[page.toInt()];
@@ -57,71 +62,73 @@ class ScrollInputV3 extends StatelessWidget {
                 },
                 allowImplicitScrolling: false,
                 scrollDirection: Axis.vertical,
-                controller: controller,
+                controller: pageController,
                 children: [
                   ...List.generate(
                       values.length,
                       (index) => Center(
-                        child: Builder(builder: (context) {
-                          final textController = TextEditingController(
-                              text: (values[index]).toString());
-                          final focusNode = FocusNode();
-                          focusNode.addListener(() {
-                            if (focusNode.hasFocus) {
-                              textController.selection = TextSelection(
-                                  baseOffset: 0,
-                                  extentOffset: textController.text.length);
-                            }
-                          });
-
-                          var textField = TextField(
-                            showCursor: true,
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            focusNode: focusNode,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                            ),
-                            onChanged: (string) {
-                              onValueChanged?.call(string);
-                            },
-                            onTapOutside: (event) {
-                              textController.text =
-                                  textController.text.replaceAll(',', '.');
-                              String textfieldText = textController.text;
-                              if (focusNode.hasFocus) {
-                                focusNode.unfocus();
-                                if (textfieldText != '') {
-                                  print(
-                                      'value: ${double.parse(textfieldText)}');
-                                  print(values);
-                                  int page = values.indexOf(
-                                      double.parse(textfieldText)
-                                          .toString());
-                                  if (page != -1) {
-                                    print('page: $page');
-                                    controller.jumpToPage(page);
-                                  } else {
-                                    page = values.indexOf(
-                                        double.parse(textfieldText)
-                                            .toInt()
-                                            .toString());
-                                    controller.jumpToPage(page);
-                                  }
+                            child: Builder(builder: (context) {
+                              final textController = TextEditingController(
+                                  text: (values[index]).toString());
+                              final focusNode = FocusNode();
+                              focusNode.addListener(() {
+                                if (focusNode.hasFocus) {
+                                  textController.selection = TextSelection(
+                                      baseOffset: 0,
+                                      extentOffset: textController.text.length);
                                 }
-                              }
-                            },
-                            controller: textController,
-                            style: textStyle,
-                          );
-                          return isEnabled
-                              ? textField
-                              : Text(
-                                  (values[index]).toString(),
-                                  style: textStyle,
-                                );
-                        }),
-                      ))
+                              });
+
+                              var textField = TextField(
+                                showCursor: true,
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                focusNode: focusNode,
+                                
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  
+                                ),
+                                onChanged: (string) {
+                                  onValueChanged?.call(string);
+                                },
+                                onTapOutside: (event) {
+                                  textController.text =
+                                      textController.text.replaceAll(',', '.');
+                                  String textfieldText = textController.text;
+                                  if (focusNode.hasFocus) {
+                                    focusNode.unfocus();
+                                    if (textfieldText != '') {
+                                      print(
+                                          'value: ${double.parse(textfieldText)}');
+                                      print(values);
+                                      int page = values.indexOf(
+                                          double.parse(textfieldText)
+                                              .toString());
+                                      if (page != -1) {
+                                        print('page: $page');
+                                        pageController.jumpToPage(page);
+                                      } else {
+                                        page = values.indexOf(
+                                            double.parse(textfieldText)
+                                                .toInt()
+                                                .toString());
+                                        pageController.jumpToPage(page);
+                                      }
+                                    }
+                                  }
+                                },
+                                controller: textController,
+                                style: textStyle,
+                              );
+                              return isEnabled
+                                  ? textField
+                                  : Text(
+                                      (values[index]).toString(),
+                                      style: textStyle,
+                                    );
+                            }),
+                          ))
                 ],
               );
             }),
@@ -131,7 +138,7 @@ class ScrollInputV3 extends StatelessWidget {
             quarterTurns: 2,
             child: buildNeumorphicIcon(onTap: () {
               onDown?.call();
-              controller.nextPage(
+              pageController.nextPage(
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeInOut);
             }))

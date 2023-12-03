@@ -37,6 +37,7 @@ dependencies:
   flutter_neumorphic: ^3.2.0
   flutter_inner_shadow: ^0.0.1
   flutter_riverpod: ^2.1.3
+  get_it: ^7.6.0
 
 dev_dependencies:
   flutter_test:
