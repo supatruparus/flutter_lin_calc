@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lin_calc/data/history_page_model.dart';
-import 'package:flutter_lin_calc/utils/extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/models/result.dart';
@@ -41,7 +40,7 @@ class _Card extends StatelessWidget {
   Widget build(BuildContext context) {
     return FittedBox(
       child: Text(
-        'Площадь: ${result.ploshad.toStringAsFixed(3)}, Длина: ${result.length}',
+        'Площадь: ${result.ploshad.toStringAsFixed(3)}, Длина: ${result.length.toStringAsFixed(3)}',
       ),
     );
   }

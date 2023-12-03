@@ -4,10 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/models/result.dart';
 
 class HistoryPageModel {
-  HistoryPageModel(this.ref) {
-    resultsList = ref.watch(historyListProvider);
-  }
-  WidgetRef ref;
+  HistoryPageModel(this.ref) {}
+  final WidgetRef ref;
 
-  List<Result> resultsList = [];
+  late final List<Result> resultsList = ref.watch(historyListProvider);
 }

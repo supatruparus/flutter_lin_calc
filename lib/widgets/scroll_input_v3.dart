@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +48,7 @@ class ScrollInputV3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextStyle mytextStyle =
-        textStyle ?? Theme.of(context).textTheme.bodyLarge ?? const TextStyle();
+        TextStyle(fontSize: 32, color: Theme.of(context).colorScheme.primary);
 
     pageController.addListener(() {
       debugPrint('page position = ${pageController.page}');
@@ -69,8 +71,6 @@ class ScrollInputV3 extends StatelessWidget {
                   Center(
                     child: Consumer(builder: (context, ref, child) {
                       return PageView(
-                        padEnds: true,
-                        pageSnapping: true,
                         reverse: reverse,
                         onPageChanged: (page) {
                           String string = values[page.toInt()];
@@ -98,14 +98,16 @@ class ScrollInputV3 extends StatelessWidget {
                                         }
                                       });
 
-                                      var textField = TextField(
-                                        showCursor: true,
+                                      return TextField(
+                                        showCursor: false,
                                         textAlign: TextAlign.center,
                                         keyboardType: TextInputType.number,
                                         focusNode: focusNode,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            enabled: isEnabled,
+                                            floatingLabelAlignment:
+                                                FloatingLabelAlignment.center),
                                         onChanged: (string) {
                                           onValueChanged?.call(string);
                                         },
@@ -135,13 +137,10 @@ class ScrollInputV3 extends StatelessWidget {
                                         },
                                         controller: textController,
                                         style: mytextStyle,
+                                        enableInteractiveSelection: false,
+                                        selectionHeightStyle:
+                                            BoxHeightStyle.tight,
                                       );
-                                      return isEnabled
-                                          ? textField
-                                          : Text(
-                                              (values[index]).toString(),
-                                              style: mytextStyle,
-                                            );
                                     }),
                                   ))
                         ],
