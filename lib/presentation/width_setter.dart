@@ -23,7 +23,6 @@ class _WidthSetter extends StatelessWidget {
           return ScrollInputV3(
             isEnabled: false,
             values: List.generate(20, (index) => (index / 2).toString()),
-            textStyle: ref.watch(theme.select((value) => value.textStyle)),
             onValueChanged: (string) {
               double width = double.parse(string);
               viewModel.onPickWidth(width);

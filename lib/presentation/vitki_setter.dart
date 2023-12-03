@@ -23,8 +23,8 @@ class _VitkiSetter extends StatelessWidget {
               int vitki = double.parse(string).toInt();
               viewModel.onPickVitki(vitki);
             },
+            textStyle: Theme.of(context).textTheme.bodyLarge,
             values: List.generate(100, (index) => index.toString()),
-            textStyle: ref.watch(theme.select((value) => value.textStyle)),
           );
         })
       ],

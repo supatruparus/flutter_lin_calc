@@ -28,7 +28,6 @@ class _RadiusSetter extends StatelessWidget {
             values: List.generate(10000, (index) {
               return (index / 10).toSimpleString();
             }),
-            textStyle: ref.watch(theme.select((value) => value.textStyle)),
           );
         })
       ],

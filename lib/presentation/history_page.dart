@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lin_calc/data/history_page_model.dart';
+import 'package:flutter_lin_calc/utils/extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/models/result.dart';
@@ -10,13 +11,23 @@ class HistoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final model = HistoryPageModel(ref);
-    return Container(
-      child: Column(
-          children: List.generate(
-              model.resultsList.length,
-              (index) => _Card(
-                    result: model.resultsList[index],
-                  ))),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('История'),
+        backgroundColor: Colors.transparent,
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Column(
+                children: List.generate(
+                    model.resultsList.length,
+                    (index) => _Card(
+                          result: model.resultsList[index],
+                        ))),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -26,10 +37,11 @@ class _Card extends StatelessWidget {
   final Result result;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(children: [
-        Text('Площадь: ${result.ploshad}, Длина: ${result.length}')
-      ]),
-    );
+    return Row(mainAxisSize: MainAxisSize.max, children: [
+      Text(
+        'Площадь: ${result.ploshad.toSimpleString()}, Длина: ${result.length}',
+        style: Theme.of(context).textTheme.bodyMedium,
+      )
+    ]);
   }
 }
