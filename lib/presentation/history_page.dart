@@ -17,15 +17,18 @@ class HistoryPage extends ConsumerWidget {
         backgroundColor: Colors.transparent,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Column(
-                children: List.generate(
-                    model.resultsList.length,
-                    (index) => _Card(
-                          result: model.resultsList[index],
-                        ))),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Column(
+                  children: List.generate(
+                      model.resultsList.length,
+                      (index) => _Card(
+                            result: model.resultsList[index],
+                          ))),
+            ],
+          ),
         ),
       ),
     );
@@ -37,11 +40,10 @@ class _Card extends StatelessWidget {
   final Result result;
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisSize: MainAxisSize.max, children: [
-      Text(
-        'Площадь: ${result.ploshad.toSimpleString()}, Длина: ${result.length}',
-        style: Theme.of(context).textTheme.bodyMedium,
-      )
-    ]);
+    return FittedBox(
+      child: Text(
+        'Площадь: ${result.ploshad.toStringAsFixed(3)}, Длина: ${result.length}',
+      ),
+    );
   }
 }
