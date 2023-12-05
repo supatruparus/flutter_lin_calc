@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lin_calc/consts/colors.dart';
 import 'package:flutter_lin_calc/presentation/history_page.dart';
 import 'package:flutter_lin_calc/presentation/main_page_view.dart';
 import 'package:flutter_lin_calc/theme.dart';

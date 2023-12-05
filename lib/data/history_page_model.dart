@@ -4,8 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/models/result.dart';
 
 class HistoryPageModel {
-  HistoryPageModel(this.ref) {}
+  HistoryPageModel(this.ref);
   final WidgetRef ref;
 
   late final List<Result> resultsList = ref.watch(historyListProvider);
+
+  onRemoveItem(int index) {
+    ref.read(historyListProvider.notifier).remove(index);
+  }
 }

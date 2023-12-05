@@ -5,6 +5,11 @@ import 'consts/colors.dart';
 ThemeData myTheme = ThemeData(
     scaffoldBackgroundColor: MyColors.bgGrey,
     textTheme: TextTheme(
+        bodySmall: const TextStyle(
+          fontFamily: 'MontserratAlternates',
+          fontStyle: FontStyle.normal,
+          fontSize: 24,
+        ),
         bodyMedium: TextStyle(
           fontFamily: 'MontserratAlternates',
           fontStyle: FontStyle.normal,
@@ -24,7 +29,5 @@ ThemeData myTheme = ThemeData(
         titleTextStyle: TextStyle(fontSize: 26, color: MyColors.yelowtext)),
     colorScheme: const ColorScheme.dark().copyWith(
         primary: MyColors.yelowtext,
-        // onPrimary: Colors.red,
-        // onBackground: Colors.red,
         error: MyColors.yelowtext,
         secondary: MyColors.yelowtext));

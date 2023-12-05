@@ -9,6 +9,12 @@ class HistoryList extends StateNotifier<List<Result>> {
     newList.add(result);
     state = newList;
   }
+
+  remove(index) {
+    final newList = List<Result>.from(state);
+    newList.removeAt(index);
+    state = newList;
+  }
 }
 
 final historyListProvider =

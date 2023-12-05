@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const Color _bgGrey = const Color.fromRGBO(29, 29, 29, 1);
-const Color _dark = const Color.fromRGBO(30, 30, 30, 1);
-
 class ScrollInputV3 extends StatelessWidget {
   ScrollInputV3(
       {Key? key,
@@ -19,9 +16,11 @@ class ScrollInputV3 extends StatelessWidget {
       this.isEnabled = true,
       this.color,
       this.reverse = false,
+      this.initialPage = 0,
       required this.values})
       : super(key: key);
   final Color? color;
+  final int initialPage;
   final List<String> values;
   final TextStyle? textStyle;
   final double width;
@@ -31,8 +30,39 @@ class ScrollInputV3 extends StatelessWidget {
   final Function()? onUp;
   final bool reverse;
   final bool isEnabled;
-  final PageController pageController =
-      PageController(initialPage: 0, viewportFraction: 0.6);
+  late final PageController pageController =
+      PageController(initialPage: initialPage, viewportFraction: 0.6);
+  final textController = TextEditingController();
+  final focusNode = FocusNode();
+
+  _onPageChanged(int page) {
+    String string = values[page.toInt()];
+    onValueChanged?.call(string);
+  }
+
+  _onValueChanged(String string) {
+    onValueChanged?.call(string);
+  }
+
+  _onSubmit() {}
+
+  _onTapOutside() {
+    textController.text = textController.text.replaceAll(',', '.');
+    String textfieldText = textController.text;
+    if (focusNode.hasFocus) {
+      focusNode.unfocus();
+      if (textfieldText != '') {
+        int page = values.indexOf(double.parse(textfieldText).toString());
+        if (page != -1) {
+          pageController.jumpToPage(page);
+        } else {
+          page = values.indexOf(double.parse(textfieldText).toInt().toString());
+          pageController.jumpToPage(page);
+        }
+      }
+    }
+  }
+
   _onDownArrow() {
     onDown?.call();
     pageController.nextPage(
@@ -47,12 +77,15 @@ class ScrollInputV3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        textController.selection = TextSelection(
+            baseOffset: 0, extentOffset: textController.text.length);
+      }
+    });
     TextStyle mytextStyle =
         TextStyle(fontSize: 32, color: Theme.of(context).colorScheme.primary);
 
-    pageController.addListener(() {
-      debugPrint('page position = ${pageController.page}');
-    });
     return SizedBox(
       height: 150,
       child: Column(
@@ -147,7 +180,7 @@ class ScrollInputV3 extends StatelessWidget {
                       );
                     }),
                   ),
-                  _ForeGround(),
+                  const _ForeGround(),
                 ],
               ),
             ),
@@ -174,8 +207,6 @@ class _UpButton extends StatelessWidget {
           onPressed: onTap,
           child: const Icon(
             Icons.arrow_drop_up_outlined,
-
-            // color: color ?? Colors.white,
           )),
     );
   }
@@ -192,8 +223,6 @@ class _DownButton extends StatelessWidget {
           onPressed: onTap,
           child: const Icon(
             Icons.arrow_drop_down_outlined,
-
-            // color: color ?? Colors.white,
           )),
     );
   }
@@ -205,9 +234,6 @@ buttonStyle(BuildContext context) => ButtonStyle(
           Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white),
       padding: const MaterialStatePropertyAll(EdgeInsets.zero),
       backgroundColor: const MaterialStatePropertyAll(Colors.transparent),
-      // fixedSize: MaterialStateProperty.all(
-      // const Size.fromHeight(10),
-      // ),
     );
 
 class _ForeGround extends StatelessWidget {
@@ -218,21 +244,23 @@ class _ForeGround extends StatelessWidget {
     return IgnorePointer(
       child: Container(
         decoration: BoxDecoration(
-            gradient:
-                LinearGradient(transform: GradientRotation(1.57079633), stops: [
-              0.2,
-              0.3,
-              0.5,
-              0.7,
-              0.8
-            ], colors: [
-              Colors.black.withOpacity(0.9),
-              Colors.black.withOpacity(0.6),
-              Colors.transparent,
-              Colors.black.withOpacity(0.6),
-              Colors.black.withOpacity(0.9)
-            ]),
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+            gradient: LinearGradient(
+                transform: const GradientRotation(1.57079633),
+                stops: const [
+                  0.2,
+                  0.3,
+                  0.5,
+                  0.7,
+                  0.8
+                ],
+                colors: [
+                  Colors.black.withOpacity(0.9),
+                  Colors.black.withOpacity(0.6),
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.6),
+                  Colors.black.withOpacity(0.9)
+                ]),
+            borderRadius: const BorderRadius.all(Radius.circular(15))),
       ),
     );
   }

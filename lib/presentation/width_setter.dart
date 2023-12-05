@@ -5,7 +5,7 @@ class _WidthSetter extends StatelessWidget {
     required this.viewModel,
   });
 
-  final ViewModelNotifier viewModel;
+  final LinCalcAppNotifier viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,7 @@ class _WidthSetter extends StatelessWidget {
         Consumer(builder: (context, ref, child) {
           return ScrollInputV3(
             isEnabled: false,
+            initialPage: (viewModel.rulonParams.width * 2).toInt(),
             values: List.generate(20, (index) => (index / 2).toString()),
             onValueChanged: (string) {
               double width = double.parse(string);

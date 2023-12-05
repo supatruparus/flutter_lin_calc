@@ -5,7 +5,7 @@ class _RadiusSetter extends StatelessWidget {
     Key? key,
     required this.viewModel,
   }) : super(key: key);
-  final ViewModelNotifier viewModel;
+  final LinCalcAppNotifier viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +21,7 @@ class _RadiusSetter extends StatelessWidget {
         }),
         Consumer(builder: (context, ref, child) {
           return ScrollInputV3(
+            initialPage: (viewModel.rulonParams.radius * 10).toInt(),
             onValueChanged: (string) {
               double radius = double.tryParse(string) ?? 0;
               viewModel.onPickRadius(radius);

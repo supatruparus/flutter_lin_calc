@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lin_calc/data/result_provider.dart';
-import 'package:flutter_lin_calc/presentation/result_v2.dart';
 import 'package:flutter_lin_calc/utils/extensions.dart';
 import 'package:flutter_lin_calc/widgets/scroll_input_v3.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../consts/strings.dart';
-import '../data/page_view_model_provider.dart';
+import '../data/lin_calc_app_rep.dart';
+import '../data/result_provider.dart';
 import '../data/theme_provider.dart';
-
+import '../domain/models/lin_calc_app.dart';
 part 'radius_setter.dart';
-
-part 'result.dart';
-
 part 'vitki_setter.dart';
-
 part 'width_setter.dart';
+part 'result_v2.dart';
 
 class MyHomePage extends ConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -48,7 +44,7 @@ class MyHomePage extends ConsumerWidget {
                   ConstrainedBox(
                       constraints: const BoxConstraints(
                           minHeight: 200, minWidth: double.infinity),
-                      child: const ResultV2()),
+                      child: const _Result()),
                 ],
               ),
             ),

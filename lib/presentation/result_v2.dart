@@ -1,14 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_lin_calc/domain/models/lin_calc_app.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../consts/strings.dart';
-import '../data/result_provider.dart';
-import '../data/theme_provider.dart';
+part of 'main_page_view.dart';
 
-class ResultV2 extends ConsumerWidget {
-  const ResultV2({Key? key}) : super(key: key);
+class _Result extends ConsumerWidget {
+  const _Result({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, ref) {
+    LinCalcApp linCalcApp = ref.read(viewModelProvider.notifier);
     return Container(
       // color: Colors.red,
       padding: const EdgeInsets.all(8.0),
@@ -20,10 +16,12 @@ class ResultV2 extends ConsumerWidget {
           const _Ploshad(),
           const _Length(),
           IconButton(
-              onPressed: () {
-                lincalcApp(ref).onSaveResult();
-              },
-              icon: const Icon(Icons.save_rounded))
+            onPressed: () {
+              linCalcApp.onSaveResult();
+            },
+            icon: const Icon(Icons.save_rounded),
+            iconSize: 32,
+          )
         ],
       ),
     );
@@ -38,7 +36,7 @@ class _Ploshad extends ConsumerWidget {
     TextStyle textStyle = ref.watch(theme.select((value) => value.textStyle));
 
     final double ploshad = ref.watch(resultProvider).ploshad;
-    String text = ploshad != -1 ? '${ploshad.toStringAsFixed(3)}м²' : '--';
+    String text = ploshad != 0 ? '${ploshad.toStringAsFixed(3)}м²' : '--';
     return FittedBox(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -55,23 +53,20 @@ class _Ploshad extends ConsumerWidget {
 }
 
 class _Length extends ConsumerWidget {
-  const _Length({Key? key}) : super(key: key);
+  const _Length();
 
   @override
   Widget build(BuildContext context, ref) {
     double? dlina = ref.watch(resultProvider).length;
     TextStyle textStyle = ref.watch(theme.select((value) => value.textStyle));
-    String text = dlina != -1 ? '${dlina.toStringAsFixed(3)}м' : '--';
+    String text = dlina != 0 ? '${dlina.toStringAsFixed(3)}м' : '--';
     return FittedBox(
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text('${Strings.length}: ', style: textStyle),
-          Text(
-            text,
-            style: textStyle,
-          )
+          Text(text),
         ],
       ),
     );
