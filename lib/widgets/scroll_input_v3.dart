@@ -44,9 +44,20 @@ class ScrollInputV3 extends StatelessWidget {
     onValueChanged?.call(string);
   }
 
-  _onSubmit() {}
+  _onSubmit() {
+    String textfieldText = textController.text;
+    if (textfieldText != '') {
+      int page = values.indexOf(double.parse(textfieldText).toString());
+      if (page != -1) {
+        pageController.jumpToPage(page);
+      } else {
+        page = values.indexOf(double.parse(textfieldText).toInt().toString());
+        pageController.jumpToPage(page);
+      }
+    }
+  }
 
-  _onTapOutside() {
+  _onTapOutside(PointerDownEvent event) {
     textController.text = textController.text.replaceAll(',', '.');
     String textfieldText = textController.text;
     if (focusNode.hasFocus) {
@@ -143,6 +154,27 @@ class ScrollInputV3 extends StatelessWidget {
                                                 FloatingLabelAlignment.center),
                                         onChanged: (string) {
                                           onValueChanged?.call(string);
+                                          textController.text = textController
+                                              .text
+                                              .replaceAll(',', '.');
+                                          String textfieldText =
+                                              textController.text;
+                                          if (focusNode.hasFocus) {
+                                            if (textfieldText != '') {
+                                              int page = values.indexOf(
+                                                  double.parse(textfieldText)
+                                                      .toString());
+                                              if (page != -1) {
+                                                pageController.jumpToPage(page);
+                                              } else {
+                                                page = values.indexOf(
+                                                    double.parse(textfieldText)
+                                                        .toInt()
+                                                        .toString());
+                                                pageController.jumpToPage(page);
+                                              }
+                                            }
+                                          }
                                         },
                                         onTapOutside: (event) {
                                           textController.text = textController
