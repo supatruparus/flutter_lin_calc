@@ -125,24 +125,44 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
                                                 FloatingLabelAlignment.center),
                                         onChanged: (string) {
                                           textController.formatLastInput();
-
+                                          String textControllerText =
+                                              textController.text;
+                                          if (textControllerText != '') {
+                                            int page = widget.values.indexOf(
+                                                double.parse(textControllerText)
+                                                    .toString());
+                                            if (page != -1) {
+                                              pageController.jumpToPage(page);
+                                            } else {
+                                              page = widget.values.indexOf(
+                                                  double.parse(
+                                                          textControllerText)
+                                                      .toInt()
+                                                      .toString());
+                                              pageController.jumpToPage(page);
+                                            }
+                                            widget.onValueChanged
+                                                ?.call(textControllerText);
+                                          }
                                           print(
-                                              'text is ${textController.text.isParsable ? 'number (${double.parse(textController.text)})' : 'not a number'}');
+                                              'text is ${textControllerText.isParsable ? 'number (${double.parse(textController.text)})' : 'not a number'}');
                                         },
                                         onTapOutside: (event) {
-                                          String textfieldText =
+                                          String textControllerText =
                                               textController.text;
                                           if (focusNode.hasFocus) {
                                             focusNode.unfocus();
-                                            if (textfieldText != '') {
+                                            if (textControllerText != '') {
                                               int page = widget.values.indexOf(
-                                                  double.parse(textfieldText)
+                                                  double.parse(
+                                                          textControllerText)
                                                       .toString());
                                               if (page != -1) {
                                                 pageController.jumpToPage(page);
                                               } else {
                                                 page = widget.values.indexOf(
-                                                    double.parse(textfieldText)
+                                                    double.parse(
+                                                            textControllerText)
                                                         .toInt()
                                                         .toString());
                                                 pageController.jumpToPage(page);
@@ -246,4 +266,8 @@ class _ForeGround extends StatelessWidget {
       ),
     );
   }
+}
+
+class ScrollInputTextController extends TextEditingController {
+  ScrollInputTextController();
 }
