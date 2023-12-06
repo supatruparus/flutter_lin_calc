@@ -1,10 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_lin_calc/widgets/utils/utils.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ScrollInputV3 extends StatelessWidget {
+class ScrollInputV3 extends StatefulWidget {
   ScrollInputV3(
       {Key? key,
       this.width = 120,
@@ -30,58 +31,27 @@ class ScrollInputV3 extends StatelessWidget {
   final Function()? onUp;
   final bool reverse;
   final bool isEnabled;
+
+  @override
+  State<ScrollInputV3> createState() => _ScrollInputV3State();
+}
+
+class _ScrollInputV3State extends State<ScrollInputV3> {
   late final PageController pageController =
-      PageController(initialPage: initialPage, viewportFraction: 0.6);
+      PageController(initialPage: widget.initialPage, viewportFraction: 0.6);
+
   final textController = TextEditingController();
+
   final focusNode = FocusNode();
 
-  _onPageChanged(int page) {
-    String string = values[page.toInt()];
-    onValueChanged?.call(string);
-  }
-
-  _onValueChanged(String string) {
-    onValueChanged?.call(string);
-  }
-
-  _onSubmit() {
-    String textfieldText = textController.text;
-    if (textfieldText != '') {
-      int page = values.indexOf(double.parse(textfieldText).toString());
-      if (page != -1) {
-        pageController.jumpToPage(page);
-      } else {
-        page = values.indexOf(double.parse(textfieldText).toInt().toString());
-        pageController.jumpToPage(page);
-      }
-    }
-  }
-
-  _onTapOutside(PointerDownEvent event) {
-    textController.text = textController.text.replaceAll(',', '.');
-    String textfieldText = textController.text;
-    if (focusNode.hasFocus) {
-      focusNode.unfocus();
-      if (textfieldText != '') {
-        int page = values.indexOf(double.parse(textfieldText).toString());
-        if (page != -1) {
-          pageController.jumpToPage(page);
-        } else {
-          page = values.indexOf(double.parse(textfieldText).toInt().toString());
-          pageController.jumpToPage(page);
-        }
-      }
-    }
-  }
-
   _onDownArrow() {
-    onDown?.call();
+    widget.onDown?.call();
     pageController.nextPage(
         duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);
   }
 
   _onUpArrow() {
-    onUp?.call();
+    widget.onUp?.call();
     pageController.previousPage(
         duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);
   }
@@ -107,30 +77,31 @@ class ScrollInputV3 extends StatelessWidget {
           Flexible(
             flex: 3,
             child: SizedBox(
-              width: width,
-              height: height,
+              width: widget.width,
+              height: widget.height,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
                   Center(
                     child: Consumer(builder: (context, ref, child) {
                       return PageView(
-                        reverse: reverse,
+                        reverse: widget.reverse,
                         onPageChanged: (page) {
-                          String string = values[page.toInt()];
-                          onValueChanged?.call(string);
+                          String string = widget.values[page.toInt()];
+                          widget.onValueChanged?.call(string);
                         },
                         allowImplicitScrolling: false,
                         scrollDirection: Axis.vertical,
                         controller: pageController,
                         children: [
                           ...List.generate(
-                              values.length,
+                              widget.values.length,
                               (index) => Center(
                                     child: Builder(builder: (context) {
                                       final textController =
                                           TextEditingController(
-                                              text: (values[index]).toString());
+                                              text: (widget.values[index])
+                                                  .toString());
                                       final focusNode = FocusNode();
                                       focusNode.addListener(() {
                                         if (focusNode.hasFocus) {
@@ -143,55 +114,34 @@ class ScrollInputV3 extends StatelessWidget {
                                       });
 
                                       return TextField(
-                                        showCursor: false,
+                                        showCursor: true,
                                         textAlign: TextAlign.center,
                                         keyboardType: TextInputType.number,
                                         focusNode: focusNode,
                                         decoration: InputDecoration(
                                             border: InputBorder.none,
-                                            enabled: isEnabled,
+                                            enabled: widget.isEnabled,
                                             floatingLabelAlignment:
                                                 FloatingLabelAlignment.center),
                                         onChanged: (string) {
-                                          onValueChanged?.call(string);
-                                          textController.text = textController
-                                              .text
-                                              .replaceAll(',', '.');
-                                          String textfieldText =
-                                              textController.text;
-                                          if (focusNode.hasFocus) {
-                                            if (textfieldText != '') {
-                                              int page = values.indexOf(
-                                                  double.parse(textfieldText)
-                                                      .toString());
-                                              if (page != -1) {
-                                                pageController.jumpToPage(page);
-                                              } else {
-                                                page = values.indexOf(
-                                                    double.parse(textfieldText)
-                                                        .toInt()
-                                                        .toString());
-                                                pageController.jumpToPage(page);
-                                              }
-                                            }
-                                          }
+                                          textController.formatLastInput();
+
+                                          print(
+                                              'text is ${textController.text.isParsable ? 'number (${double.parse(textController.text)})' : 'not a number'}');
                                         },
                                         onTapOutside: (event) {
-                                          textController.text = textController
-                                              .text
-                                              .replaceAll(',', '.');
                                           String textfieldText =
                                               textController.text;
                                           if (focusNode.hasFocus) {
                                             focusNode.unfocus();
                                             if (textfieldText != '') {
-                                              int page = values.indexOf(
+                                              int page = widget.values.indexOf(
                                                   double.parse(textfieldText)
                                                       .toString());
                                               if (page != -1) {
                                                 pageController.jumpToPage(page);
                                               } else {
-                                                page = values.indexOf(
+                                                page = widget.values.indexOf(
                                                     double.parse(textfieldText)
                                                         .toInt()
                                                         .toString());
