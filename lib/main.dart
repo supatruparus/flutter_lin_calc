@@ -15,12 +15,15 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return ProviderScope(
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: myTheme,
-        home: PageView(
-          padEnds: false,
-          children: const [MyHomePage(), HistoryPage()],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 300),
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          theme: myTheme,
+          home: PageView(
+            padEnds: false,
+            children: const [MyHomePage(), HistoryPage()],
+          ),
         ),
       ),
     );

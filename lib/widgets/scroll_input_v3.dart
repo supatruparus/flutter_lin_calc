@@ -6,7 +6,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScrollInputV3 extends StatefulWidget {
-  ScrollInputV3(
+  const ScrollInputV3(
       {Key? key,
       this.width = 120,
       this.height = 70,
@@ -54,6 +54,19 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
         duration: const Duration(milliseconds: 100), curve: Curves.easeInOut);
   }
 
+  _onChanged(String string, int index) {
+    widget.onValueChanged?.call(string);
+    setState(() {
+      pagesList[index] = Page(
+          text: widget.values[index],
+          onChanged: (string) {
+            _onChanged(string, index);
+          },
+          pageController: pageController,
+          values: widget.values);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     pagesList = List.generate(
@@ -62,7 +75,7 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
             text: widget.values[index],
             style: Theme.of(context).textTheme.bodyMedium,
             onChanged: (string) {
-              widget.onValueChanged?.call(string);
+              _onChanged(string, index);
             },
             pageController: pageController,
             values: widget.values));
@@ -184,7 +197,7 @@ class _ForeGround extends StatelessWidget {
 }
 
 class ScrollInputTextField extends TextField {
-  ScrollInputTextField(
+  const ScrollInputTextField(
       {super.key,
       super.onTapOutside,
       super.style,
@@ -192,16 +205,18 @@ class ScrollInputTextField extends TextField {
       super.textAlign = TextAlign.center,
       super.keyboardType = TextInputType.number,
       super.decoration,
+      super.enabled,
+      super.strutStyle = StrutStyle.disabled,
+      required super.focusNode,
       super.onChanged,
       required this.pageController,
+      super.enableInteractiveSelection = false,
+      super.selectionHeightStyle = BoxHeightStyle.tight,
       required this.onValueChanged,
       required super.controller,
       required this.values});
 
-  final FocusNode _focusNode = FocusNode();
   final Function(String string)? onValueChanged;
-  @override
-  FocusNode? get focusNode => _focusNode;
 
   final List<String> values;
   final PageController pageController;
@@ -250,7 +265,7 @@ class ScrollInputTextField extends TextField {
 
 class Page extends StatelessWidget {
   const Page({
-    Key? key,
+    super.key,
     required this.text,
     this.style,
     required this.onChanged,
@@ -259,7 +274,7 @@ class Page extends StatelessWidget {
   });
   final String text;
   final TextStyle? style;
-  final pageController;
+  final PageController pageController;
   final List<String> values;
   final Function(String string) onChanged;
   @override
@@ -267,16 +282,16 @@ class Page extends StatelessWidget {
     return Center(
       child: Builder(builder: (context) {
         final controller = TextEditingController(text: text);
-        // final focusNode = FocusNode();
-        // focusNode.addListener(() {
-        //   if (focusNode.hasFocus) {
-        //     controller.selection = TextSelection(
-        //         baseOffset: 0, extentOffset: controller.text.length);
-        //   }
-        // });
+        final focusNode = FocusNode();
+        focusNode.addListener(() {
+          if (focusNode.hasFocus) {
+            controller.selectAll();
+          }
+        });
 
         return ScrollInputTextField(
-          decoration: InputDecoration(
+          focusNode: focusNode,
+          decoration: const InputDecoration(
               border: InputBorder.none,
               enabled: true,
               floatingLabelAlignment: FloatingLabelAlignment.center),
