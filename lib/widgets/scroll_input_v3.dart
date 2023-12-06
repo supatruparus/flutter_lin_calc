@@ -40,9 +40,7 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
   late final PageController pageController =
       PageController(initialPage: widget.initialPage, viewportFraction: 0.6);
 
-  final textController = TextEditingController();
-
-  final focusNode = FocusNode();
+  late List<Page> pagesList;
 
   _onDownArrow() {
     widget.onDown?.call();
@@ -58,14 +56,16 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
 
   @override
   Widget build(BuildContext context) {
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-        textController.selection = TextSelection(
-            baseOffset: 0, extentOffset: textController.text.length);
-      }
-    });
-    TextStyle mytextStyle =
-        TextStyle(fontSize: 32, color: Theme.of(context).colorScheme.primary);
+    pagesList = List.generate(
+        widget.values.length,
+        (index) => Page(
+            text: widget.values[index],
+            style: Theme.of(context).textTheme.bodyMedium,
+            onChanged: (string) {
+              widget.onValueChanged?.call(string);
+            },
+            pageController: pageController,
+            values: widget.values));
 
     return SizedBox(
       height: 150,
@@ -93,92 +93,7 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
                         allowImplicitScrolling: false,
                         scrollDirection: Axis.vertical,
                         controller: pageController,
-                        children: [
-                          ...List.generate(
-                              widget.values.length,
-                              (index) => Center(
-                                    child: Builder(builder: (context) {
-                                      final textController =
-                                          TextEditingController(
-                                              text: (widget.values[index])
-                                                  .toString());
-                                      final focusNode = FocusNode();
-                                      focusNode.addListener(() {
-                                        if (focusNode.hasFocus) {
-                                          textController.selection =
-                                              TextSelection(
-                                                  baseOffset: 0,
-                                                  extentOffset: textController
-                                                      .text.length);
-                                        }
-                                      });
-
-                                      return TextField(
-                                        showCursor: true,
-                                        textAlign: TextAlign.center,
-                                        keyboardType: TextInputType.number,
-                                        focusNode: focusNode,
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            enabled: widget.isEnabled,
-                                            floatingLabelAlignment:
-                                                FloatingLabelAlignment.center),
-                                        onChanged: (string) {
-                                          textController.formatLastInput();
-                                          String textControllerText =
-                                              textController.text;
-                                          if (textControllerText != '') {
-                                            int page = widget.values.indexOf(
-                                                double.parse(textControllerText)
-                                                    .toString());
-                                            if (page != -1) {
-                                              pageController.jumpToPage(page);
-                                            } else {
-                                              page = widget.values.indexOf(
-                                                  double.parse(
-                                                          textControllerText)
-                                                      .toInt()
-                                                      .toString());
-                                              pageController.jumpToPage(page);
-                                            }
-                                            widget.onValueChanged
-                                                ?.call(textControllerText);
-                                          }
-                                          print(
-                                              'text is ${textControllerText.isParsable ? 'number (${double.parse(textController.text)})' : 'not a number'}');
-                                        },
-                                        onTapOutside: (event) {
-                                          String textControllerText =
-                                              textController.text;
-                                          if (focusNode.hasFocus) {
-                                            focusNode.unfocus();
-                                            if (textControllerText != '') {
-                                              int page = widget.values.indexOf(
-                                                  double.parse(
-                                                          textControllerText)
-                                                      .toString());
-                                              if (page != -1) {
-                                                pageController.jumpToPage(page);
-                                              } else {
-                                                page = widget.values.indexOf(
-                                                    double.parse(
-                                                            textControllerText)
-                                                        .toInt()
-                                                        .toString());
-                                                pageController.jumpToPage(page);
-                                              }
-                                            }
-                                          }
-                                        },
-                                        controller: textController,
-                                        style: mytextStyle,
-                                        enableInteractiveSelection: false,
-                                        selectionHeightStyle:
-                                            BoxHeightStyle.tight,
-                                      );
-                                    }),
-                                  ))
-                        ],
+                        children: pagesList,
                       );
                     }),
                   ),
@@ -230,7 +145,7 @@ class _DownButton extends StatelessWidget {
   }
 }
 
-buttonStyle(BuildContext context) => ButtonStyle(
+ButtonStyle buttonStyle(BuildContext context) => ButtonStyle(
       elevation: const MaterialStatePropertyAll(0.0),
       foregroundColor: MaterialStatePropertyAll(
           Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white),
@@ -268,6 +183,112 @@ class _ForeGround extends StatelessWidget {
   }
 }
 
-class ScrollInputTextController extends TextEditingController {
-  ScrollInputTextController();
+class ScrollInputTextField extends TextField {
+  ScrollInputTextField(
+      {super.key,
+      super.onTapOutside,
+      super.style,
+      super.showCursor = true,
+      super.textAlign = TextAlign.center,
+      super.keyboardType = TextInputType.number,
+      super.decoration,
+      super.onChanged,
+      required this.pageController,
+      required this.onValueChanged,
+      required super.controller,
+      required this.values});
+
+  final FocusNode _focusNode = FocusNode();
+  final Function(String string)? onValueChanged;
+  @override
+  FocusNode? get focusNode => _focusNode;
+
+  final List<String> values;
+  final PageController pageController;
+
+  @override
+  TapRegionCallback? get onTapOutside => _onTapOutside2;
+
+  @override
+  ValueChanged<String>? get onChanged => _onChanged;
+
+  _onChanged(String string) {
+    final String initialText = string;
+    controller!.formatLastInput();
+    String controllerText = controller!.text;
+    if (controllerText != '') {
+      int page = values.indexOf(double.parse(controllerText).toString());
+      if (page != -1) {
+        pageController.jumpToPage(page);
+        controllerText = initialText;
+      } else {
+        page = values.indexOf(double.parse(controllerText).toInt().toString());
+        pageController.jumpToPage(page);
+        controllerText = initialText;
+      }
+      onValueChanged?.call(controllerText);
+    }
+  }
+
+  _onTapOutside2(PointerDownEvent event) {
+    String controllerText = controller!.text;
+    if (focusNode!.hasFocus) {
+      focusNode!.unfocus();
+      if (controllerText != '') {
+        int page = values.indexOf(double.parse(controllerText).toString());
+        if (page != -1) {
+          pageController.jumpToPage(page);
+        } else {
+          page =
+              values.indexOf(double.parse(controllerText).toInt().toString());
+          pageController.jumpToPage(page);
+        }
+      }
+    }
+  }
+}
+
+class Page extends StatelessWidget {
+  const Page({
+    Key? key,
+    required this.text,
+    this.style,
+    required this.onChanged,
+    required this.pageController,
+    required this.values,
+  });
+  final String text;
+  final TextStyle? style;
+  final pageController;
+  final List<String> values;
+  final Function(String string) onChanged;
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Builder(builder: (context) {
+        final controller = TextEditingController(text: text);
+        // final focusNode = FocusNode();
+        // focusNode.addListener(() {
+        //   if (focusNode.hasFocus) {
+        //     controller.selection = TextSelection(
+        //         baseOffset: 0, extentOffset: controller.text.length);
+        //   }
+        // });
+
+        return ScrollInputTextField(
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              enabled: true,
+              floatingLabelAlignment: FloatingLabelAlignment.center),
+          controller: controller,
+          style: style,
+          onValueChanged: (String string) {
+            onChanged.call(string);
+          },
+          pageController: pageController,
+          values: values,
+        );
+      }),
+    );
+  }
 }

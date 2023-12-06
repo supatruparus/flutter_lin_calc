@@ -43,26 +43,28 @@ extension RemoveLast on String {
 extension FormatLast on TextEditingController {
   ///Заменяет введенную запятую на точку, не дает ввести ничего кроме цифр
   formatLastInput() {
-    if (text.endsWith(',')) {
-      text = text.replaceLastChar('.');
-      selection = TextSelection.collapsed(
-          offset: text.length, affinity: TextAffinity.downstream);
-    } else {
-      //  если символ не число и не точка удалить последний
-      if (!text.characters.last.isNumber && text.characters.last != '.') {
-        text = text.removeLast();
+    if (text.isNotEmpty) {
+      if (text.endsWith(',')) {
+        text = text.replaceLastChar('.');
         selection = TextSelection.collapsed(
             offset: text.length, affinity: TextAffinity.downstream);
+      } else {
+        //  если символ не число и не точка удалить последний
+        if (!text.characters.last.isNumber && text.characters.last != '.') {
+          text = text.removeLast();
+          selection = TextSelection.collapsed(
+              offset: text.length, affinity: TextAffinity.downstream);
+        }
       }
-    }
 
-    ///Если введена точка но точка уже была
-    if (text.endsWith('.')) {
-      if (text.removeLast().contains('.')) {
-        print('text содержит точку: ${text}');
-        text = text.removeLast();
-        selection = TextSelection.collapsed(
-            offset: text.length, affinity: TextAffinity.downstream);
+      ///Если введена точка но точка уже была
+      if (text.endsWith('.')) {
+        if (text.removeLast().contains('.')) {
+          print('text содержит точку: $text');
+          text = text.removeLast();
+          selection = TextSelection.collapsed(
+              offset: text.length, affinity: TextAffinity.downstream);
+        }
       }
     }
   }
