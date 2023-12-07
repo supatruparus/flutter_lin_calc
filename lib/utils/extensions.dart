@@ -1,9 +1,7 @@
-
-
-extension ToSimpleString on num{
-
-  String toSimpleString(){
-    return this is int || this == this.roundToDouble() ? this.toInt().toString() : (this as double).toString();
+extension ToSimpleString on num {
+  String toSimpleString() {
+    return this is int || this == roundToDouble()
+        ? toInt().toString()
+        : (this as double).toString();
   }
-
 }
