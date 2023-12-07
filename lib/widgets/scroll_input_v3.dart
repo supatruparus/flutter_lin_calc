@@ -56,15 +56,6 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
 
   _onChanged(String string, int index) {
     widget.onValueChanged?.call(string);
-    setState(() {
-      pagesList[index] = Page(
-          text: widget.values[index],
-          onChanged: (string) {
-            _onChanged(string, index);
-          },
-          pageController: pageController,
-          values: widget.values);
-    });
   }
 
   @override
@@ -232,17 +223,14 @@ class ScrollInputTextField extends TextField {
     controller!.formatLastInput();
     String controllerText = controller!.text;
     if (controllerText != '') {
-      int page = values.indexOf(double.parse(controllerText).toString());
-      if (page != -1) {
-        pageController.jumpToPage(page);
-        controllerText = initialText;
-      } else {
-        page = values.indexOf(double.parse(controllerText).toInt().toString());
-        pageController.jumpToPage(page);
-        controllerText = initialText;
-      }
-      onValueChanged?.call(controllerText);
+      int page =
+          values.indexOf(double.parse(controllerText).toInt().toString());
+
+      pageController.animateToPage(page,
+          duration: Duration(milliseconds: 100), curve: Curves.decelerate);
+      controllerText = initialText;
     }
+    onValueChanged?.call(controllerText);
   }
 
   _onTapOutside2(PointerDownEvent event) {

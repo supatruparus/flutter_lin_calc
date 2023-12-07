@@ -21,34 +21,39 @@ class MyHomePage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(Strings.title)),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 50, right: 50),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 450),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _WidthSetter(viewModel: viewModel),
-                      _VitkiSetter(viewModel: viewModel),
-                      _RadiusSetter(
-                        viewModel: viewModel,
+                      Column(
+                        children: [
+                          _WidthSetter(viewModel: viewModel),
+                          _VitkiSetter(viewModel: viewModel),
+                          _RadiusSetter(
+                            viewModel: viewModel,
+                          ),
+                        ],
                       ),
+                      ConstrainedBox(
+                          constraints: const BoxConstraints(
+                              minHeight: 200, minWidth: double.infinity),
+                          child: const _Result()),
                     ],
                   ),
-                  ConstrainedBox(
-                      constraints: const BoxConstraints(
-                          minHeight: 200, minWidth: double.infinity),
-                      child: const _Result()),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
