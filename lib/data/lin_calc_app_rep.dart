@@ -59,7 +59,6 @@ class LinCalcAppNotifier extends StateNotifier implements LinCalcApp {
       await _localStorage.writeStringToFile(
           'history.txt', jsonEncode(_historyListRep.state));
       String fileString = await _localStorage.readStringFromFile('history.txt');
-      print('fileString = $fileString');
     }
     debugPrint('history: ${_historyListRep.state}');
   }

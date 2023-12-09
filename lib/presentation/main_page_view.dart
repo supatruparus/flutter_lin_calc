@@ -19,7 +19,6 @@ class MyHomePage extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final viewModel = ref.read(viewModelProvider.notifier);
     double screenHeight = MediaQuery.of(context).size.height;
-    print('screenHeight = $screenHeight');
     return Scaffold(
       appBar: AppBar(title: Text(Strings.title)),
       body: Center(
@@ -34,28 +33,24 @@ class MyHomePage extends ConsumerWidget {
                 children: [
                   Flexible(
                     flex: 3,
-                    child: Container(
-                      // color: Colors.amber.withAlpha(100),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Flexible(
-                              flex: 1,
-                              child: _WidthSetter(viewModel: viewModel)),
-                          Expanded(
-                              flex: 1,
-                              child: Container(
-                                  // color: Colors.green.withAlpha(200),
-                                  width: double.maxFinite,
-                                  child: _VitkiSetter(viewModel: viewModel))),
-                          Flexible(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                            flex: 1, child: _WidthSetter(viewModel: viewModel)),
+                        Expanded(
                             flex: 1,
-                            child: _RadiusSetter(
-                              viewModel: viewModel,
-                            ),
+                            child: SizedBox(
+                                // color: Colors.green.withAlpha(200),
+                                width: double.maxFinite,
+                                child: _VitkiSetter(viewModel: viewModel))),
+                        Flexible(
+                          flex: 1,
+                          child: _RadiusSetter(
+                            viewModel: viewModel,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   const Flexible(flex: 1, child: _Result()),

@@ -13,8 +13,8 @@ class _Result extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Flexible(flex: 1, child: const _Ploshad()),
-          Flexible(flex: 1, child: const _Length()),
+          const Flexible(flex: 1, child: _Ploshad()),
+          const Flexible(flex: 1, child: _Length()),
           Flexible(
             flex: 1,
             fit: FlexFit.tight,

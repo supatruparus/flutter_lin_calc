@@ -60,7 +60,6 @@ extension FormatLast on TextEditingController {
       ///Если введена точка но точка уже была
       if (text.endsWith('.')) {
         if (text.removeLast().contains('.')) {
-          print('text содержит точку: $text');
           text = text.removeLast();
           selection = TextSelection.collapsed(
               offset: text.length, affinity: TextAffinity.downstream);
