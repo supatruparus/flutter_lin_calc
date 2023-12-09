@@ -13,14 +13,18 @@ class _Result extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const _Ploshad(),
-          const _Length(),
-          IconButton(
-            onPressed: () {
-              linCalcApp.onSaveResult();
-            },
-            icon: const Icon(Icons.save_rounded),
-            iconSize: 32,
+          Flexible(flex: 1, child: const _Ploshad()),
+          Flexible(flex: 1, child: const _Length()),
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: IconButton(
+              onPressed: () {
+                linCalcApp.onSaveResult();
+              },
+              icon: const Icon(Icons.save_rounded),
+              // iconSize: 32,
+            ),
           )
         ],
       ),

@@ -1,15 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_lin_calc/widgets/utils/utils.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'utils/utils.dart';
 
 class ScrollInputV3 extends StatefulWidget {
   const ScrollInputV3(
       {Key? key,
       this.width = 120,
-      this.height = 70,
+      this.height = double.maxFinite,
       this.onValueChanged,
       this.textStyle,
       this.onUp,
@@ -40,7 +38,17 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
   late final PageController pageController =
       PageController(initialPage: widget.initialPage, viewportFraction: 0.6);
 
-  late List<Page> pagesList;
+  late List<Widget> pagesList;
+  bool isEditMode = false;
+  double? height;
+  FocusNode _focusNode = FocusNode();
+
+  _onTap() {
+    print('tap');
+    setState(() {
+      isEditMode = true;
+    });
+  }
 
   _onDownArrow() {
     widget.onDown?.call();
@@ -62,32 +70,27 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
   Widget build(BuildContext context) {
     pagesList = List.generate(
         widget.values.length,
-        (index) => Page(
-            text: widget.values[index],
-            style: Theme.of(context).textTheme.bodyMedium,
-            onChanged: (string) {
-              _onChanged(string, index);
-            },
-            pageController: pageController,
-            values: widget.values));
+        (index) => Center(
+              child: Text(widget.values[index]),
+            ));
 
     return SizedBox(
-      height: 150,
+      height: widget.height,
+      width: widget.width,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Flexible(flex: 1, child: _UpButton(onTap: _onUpArrow)),
           Flexible(
-            flex: 3,
-            child: SizedBox(
-              width: widget.width,
-              height: widget.height,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Center(
-                    child: Consumer(builder: (context, ref, child) {
+            flex: 2,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Center(
+                  child: Builder(builder: (context) {
+                    return LayoutBuilder(builder: (context, constr) {
+                      height = constr.maxHeight;
                       return PageView(
                         reverse: widget.reverse,
                         onPageChanged: (page) {
@@ -99,11 +102,59 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
                         controller: pageController,
                         children: pagesList,
                       );
-                    }),
-                  ),
-                  const _ForeGround(),
-                ],
-              ),
+                    });
+                  }),
+                ),
+                InkWell(
+                  onTap: _onTap,
+                  child: Visibility(
+                      visible: isEditMode,
+                      child: Center(
+                        child: Container(
+                          height: (height ?? 10) * 0.55,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                transform: const GradientRotation(1.57079633),
+                                stops: const [
+                                  0.2,
+                                  0.3,
+                                  0.5,
+                                  0.7,
+                                  0.8
+                                ],
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black,
+                                  Colors.black,
+                                  Colors.black,
+                                  Colors.transparent
+                                ]),
+                          ),
+                          // color: Colors.black,
+                          child: ScrollInputTextField(
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                fillColor: Colors.black),
+                            controller: TextEditingController(),
+                            focusNode: _focusNode,
+                            onTapOutside: (event) {
+                              _focusNode.unfocus();
+                              isEditMode = false;
+                              setState(() {});
+                              print('unfocus');
+                            },
+                            onValueChanged: (string) {
+                              _onChanged(string, widget.values.indexOf(string));
+                            },
+                            pageController: pageController,
+                            style: widget.textStyle,
+                            values: widget.values,
+                          ),
+                        ),
+                      )),
+                ),
+                const _ForeGround(),
+              ],
             ),
           ),
           Flexible(
@@ -164,6 +215,8 @@ class _ForeGround extends StatelessWidget {
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: Container(
+        width: double.maxFinite,
+        height: double.maxFinite,
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 transform: const GradientRotation(1.57079633),
@@ -196,7 +249,10 @@ class ScrollInputTextField extends TextField {
       super.textAlign = TextAlign.center,
       super.keyboardType = TextInputType.number,
       super.decoration,
+      super.expands = true,
+      super.maxLines = null,
       super.enabled,
+      super.textAlignVertical = TextAlignVertical.center,
       super.strutStyle = StrutStyle.disabled,
       required super.focusNode,
       super.onChanged,
@@ -227,7 +283,8 @@ class ScrollInputTextField extends TextField {
           values.indexOf(double.parse(controllerText).toInt().toString());
 
       pageController.animateToPage(page,
-          duration: Duration(milliseconds: 100), curve: Curves.decelerate);
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.decelerate);
       controllerText = initialText;
     }
     onValueChanged?.call(controllerText);
@@ -248,6 +305,7 @@ class ScrollInputTextField extends TextField {
         }
       }
     }
+    super.onTapOutside?.call(event);
   }
 }
 
@@ -277,19 +335,23 @@ class Page extends StatelessWidget {
           }
         });
 
-        return ScrollInputTextField(
-          focusNode: focusNode,
-          decoration: const InputDecoration(
-              border: InputBorder.none,
-              enabled: true,
-              floatingLabelAlignment: FloatingLabelAlignment.center),
-          controller: controller,
-          style: style,
-          onValueChanged: (String string) {
-            onChanged.call(string);
-          },
-          pageController: pageController,
-          values: values,
+        return Container(
+          // color: Colors.amber.withAlpha(200),
+          child: ScrollInputTextField(
+            textAlign: TextAlign.center,
+            focusNode: focusNode,
+            decoration: const InputDecoration(
+                border: InputBorder.none,
+                enabled: true,
+                floatingLabelAlignment: FloatingLabelAlignment.center),
+            controller: controller,
+            style: style,
+            onValueChanged: (String string) {
+              onChanged.call(string);
+            },
+            pageController: pageController,
+            values: values,
+          ),
         );
       }),
     );
