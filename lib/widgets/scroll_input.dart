@@ -37,15 +37,47 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
   late final PageController pageController =
       PageController(initialPage: widget.initialPage, viewportFraction: 0.5);
 
-  late List<Widget> pagesList;
   int currentPage = 0;
   bool isEditMode = false;
   double? height;
   final FocusNode _focusNode = FocusNode();
   late final TextEditingController _textController =
       TextEditingController(text: widget.values[widget.initialPage]);
+  late List<Widget> pagesList = List.generate(
+      widget.values.length,
+      (index) => Center(
+            child: Text(widget.values[index]),
+          ));
+  late Widget scrollInputTextField = Padding(
+    padding: const EdgeInsets.only(top: 10, bottom: 10),
+    child: ScrollInputTextField(
+      controller: _textController,
+      // showCursor: true,
+      // textAlign: TextAlign.center,
+      focusNode: _focusNode,
+
+      decoration: const InputDecoration(
+          filled: false,
+          border: InputBorder.none,
+          fillColor: Colors.transparent),
+      onTapOutside: (event) {
+        _focusNode.unfocus();
+        isEditMode = false;
+        setState(() {});
+      },
+      onValueChanged: (string) {
+        if (string != '') {
+          _onChanged(string);
+        }
+      },
+      pageController: pageController,
+      style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+      values: widget.values,
+    ),
+  );
 
   _onTap() {
+    print('tap');
     setState(() {
       isEditMode = true;
     });
@@ -72,40 +104,6 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
 
   @override
   Widget build(BuildContext context) {
-    pagesList = List.generate(
-        widget.values.length,
-        (index) => Center(
-              child: Text(widget.values[index]),
-            ));
-
-    Widget scrollInputTextField = Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 10),
-      child: ScrollInputTextField(
-        controller: _textController,
-        // showCursor: true,
-        // textAlign: TextAlign.center,
-        focusNode: _focusNode,
-
-        decoration: const InputDecoration(
-            filled: false,
-            border: InputBorder.none,
-            fillColor: Colors.transparent),
-        onTapOutside: (event) {
-          _focusNode.unfocus();
-          isEditMode = false;
-          setState(() {});
-        },
-        onValueChanged: (string) {
-          if (string != '') {
-            _onChanged(string);
-          }
-        },
-        pageController: pageController,
-        style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
-        values: widget.values,
-      ),
-    );
-
     return SizedBox(
       height: widget.height,
       width: widget.width,
@@ -116,6 +114,7 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
           Flexible(flex: 1, child: _UpButton(onTap: _onUpArrow)),
           Flexible(
             flex: 2,
+            fit: FlexFit.tight,
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -123,6 +122,7 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
                   child: Builder(builder: (context) {
                     return LayoutBuilder(builder: (context, constr) {
                       height = constr.maxHeight;
+
                       return PageView(
                         reverse: widget.reverse,
                         onPageChanged: (page) {
@@ -139,35 +139,39 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
                     });
                   }),
                 ),
-                InkWell(
-                  onTap: _onTap,
-                  child: Visibility(
-                      visible: isEditMode,
-                      child: Center(
-                        child: Container(
-                          // height: (height ?? 10) * 0.55,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                transform: const GradientRotation(1.57079633),
-                                stops: const [
-                                  0.2,
-                                  0.3,
-                                  0.5,
-                                  0.7,
-                                  0.8
-                                ],
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withOpacity(0.9),
-                                  Colors.black,
-                                  Colors.black.withOpacity(0.9),
-                                  Colors.transparent
-                                ]),
+                Container(
+                  // color: Colors.green,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: _onTap,
+                    child: Visibility(
+                        visible: isEditMode,
+                        child: Center(
+                          child: Container(
+                            // height: (height ?? 10) * 0.55,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  transform: const GradientRotation(1.57079633),
+                                  stops: const [
+                                    0.2,
+                                    0.3,
+                                    0.5,
+                                    0.7,
+                                    0.8
+                                  ],
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(0.9),
+                                    Colors.black,
+                                    Colors.black.withOpacity(0.9),
+                                    Colors.transparent
+                                  ]),
+                            ),
+                            // color: Colors.black,
+                            child: Center(child: scrollInputTextField),
                           ),
-                          // color: Colors.black,
-                          child: Center(child: scrollInputTextField),
-                        ),
-                      )),
+                        )),
+                  ),
                 ),
                 const _ForeGround(),
               ],
@@ -229,28 +233,30 @@ class _ForeGround extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                transform: const GradientRotation(1.57079633),
-                stops: const [
-                  0.2,
-                  0.3,
-                  0.5,
-                  0.7,
-                  0.8
-                ],
-                colors: [
-                  Colors.black.withOpacity(0.9),
-                  Colors.black.withOpacity(0.6),
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.6),
-                  Colors.black.withOpacity(0.9)
-                ]),
-            borderRadius: const BorderRadius.all(Radius.circular(15))),
+    return Center(
+      child: IgnorePointer(
+        child: Container(
+          width: double.maxFinite,
+          height: double.maxFinite,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  transform: const GradientRotation(1.57079633),
+                  stops: const [
+                    0.2,
+                    0.3,
+                    0.5,
+                    0.7,
+                    0.8
+                  ],
+                  colors: [
+                    Colors.black.withOpacity(0.9),
+                    Colors.black.withOpacity(0.6),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.6),
+                    Colors.black.withOpacity(0.9)
+                  ]),
+              borderRadius: const BorderRadius.all(Radius.circular(15))),
+        ),
       ),
     );
   }

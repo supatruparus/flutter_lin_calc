@@ -18,44 +18,41 @@ class MyHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final viewModel = ref.read(viewModelProvider.notifier);
-    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(title: Text(Strings.title)),
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 450, maxHeight: screenHeight),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 50, right: 50),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 3,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Flexible(
-                            flex: 1, child: _WidthSetter(viewModel: viewModel)),
-                        Expanded(
-                            flex: 1,
-                            child: SizedBox(
-                                // color: Colors.green.withAlpha(200),
-                                width: double.maxFinite,
-                                child: _VitkiSetter(viewModel: viewModel))),
-                        Flexible(
+          constraints: const BoxConstraints(maxWidth: 450),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 50, right: 50),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                          flex: 1, child: _WidthSetter(viewModel: viewModel)),
+                      Flexible(
                           flex: 1,
-                          child: _RadiusSetter(
-                            viewModel: viewModel,
-                          ),
+                          child: SizedBox(
+                              // color: Colors.green.withAlpha(200),
+                              width: double.maxFinite,
+                              child: _VitkiSetter(viewModel: viewModel))),
+                      Flexible(
+                        flex: 1,
+                        child: _RadiusSetter(
+                          viewModel: viewModel,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const Flexible(flex: 1, child: _Result()),
-                ],
-              ),
+                ),
+                const Flexible(flex: 1, child: _Result()),
+              ],
             ),
           ),
         ),
