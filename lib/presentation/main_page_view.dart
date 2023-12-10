@@ -18,44 +18,51 @@ class MyHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final viewModel = ref.read(viewModelProvider.notifier);
-    return Scaffold(
-      appBar: AppBar(title: Text(Strings.title)),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 450),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 50, right: 50),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  flex: 3,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                          flex: 1, child: _WidthSetter(viewModel: viewModel)),
-                      Flexible(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(Strings.title)),
+        body: LayoutBuilder(builder: (context, constr) {
+          print('height: ${MediaQuery.of(context).size.height}}');
+          return ConstrainedBox(
+            constraints: BoxConstraints(
+                maxWidth: 450, maxHeight: constr.maxHeight - 150),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 50, right: 50),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    flex: 3,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                            flex: 1, child: _WidthSetter(viewModel: viewModel)),
+                        Flexible(
+                            flex: 1,
+                            child: SizedBox(
+                                // color: Colors.green.withAlpha(200),
+                                width: double.maxFinite,
+                                child: _VitkiSetter(viewModel: viewModel))),
+                        Flexible(
                           flex: 1,
-                          child: SizedBox(
-                              // color: Colors.green.withAlpha(200),
-                              width: double.maxFinite,
-                              child: _VitkiSetter(viewModel: viewModel))),
-                      Flexible(
-                        flex: 1,
-                        child: _RadiusSetter(
-                          viewModel: viewModel,
+                          child: _RadiusSetter(
+                            viewModel: viewModel,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const Flexible(flex: 1, child: _Result()),
-              ],
+                  // const Flexible(flex: 1, child: _Result()),
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+        }),
+        bottomSheet: const SizedBox(
+            height: 140, width: double.infinity, child: _Result()),
+        extendBody: true,
       ),
     );
   }

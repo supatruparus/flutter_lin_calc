@@ -48,32 +48,31 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
       (index) => Center(
             child: Text(widget.values[index]),
           ));
-  late Widget scrollInputTextField = Padding(
-    padding: const EdgeInsets.only(top: 10, bottom: 10),
-    child: ScrollInputTextField(
-      controller: _textController,
-      // showCursor: true,
-      // textAlign: TextAlign.center,
-      focusNode: _focusNode,
 
-      decoration: const InputDecoration(
-          filled: false,
-          border: InputBorder.none,
-          fillColor: Colors.transparent),
-      onTapOutside: (event) {
-        _focusNode.unfocus();
-        isEditMode = false;
-        setState(() {});
-      },
-      onValueChanged: (string) {
-        if (string != '') {
-          _onChanged(string);
-        }
-      },
-      pageController: pageController,
-      style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
-      values: widget.values,
-    ),
+  late Widget scrollInputTextField = ScrollInputTextField(
+    controller: _textController,
+    // showCursor: true,
+    // textAlign: TextAlign.center,
+    focusNode: _focusNode,
+
+    decoration: const InputDecoration(
+        hoverColor: Colors.transparent,
+        filled: false,
+        border: InputBorder.none,
+        fillColor: Colors.transparent),
+    onTapOutside: (event) {
+      _focusNode.unfocus();
+      isEditMode = false;
+      setState(() {});
+    },
+    onValueChanged: (string) {
+      if (string != '') {
+        _onChanged(string);
+      }
+    },
+    pageController: pageController,
+    style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+    values: widget.values,
   );
 
   _onTap() {
@@ -312,7 +311,7 @@ class ScrollInputTextField extends TextField {
   _onTapOutside2(PointerDownEvent event) {
     String controllerText = controller!.text;
     if (focusNode!.hasFocus) {
-      focusNode!.unfocus();
+      // focusNode!.unfocus();
       if (controllerText != '') {
         int page = values.indexOf(double.parse(controllerText).toString());
         if (page != -1) {
