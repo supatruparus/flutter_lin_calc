@@ -35,20 +35,26 @@ class ScrollInputV3 extends StatefulWidget {
 
 class _ScrollInputV3State extends State<ScrollInputV3> {
   late final PageController pageController =
-      PageController(initialPage: widget.initialPage, viewportFraction: 0.5);
+      PageController(initialPage: widget.initialPage, viewportFraction: 0.6);
 
   int currentPage = 0;
   bool isEditMode = false;
-  double? height;
+  double height = 32;
   final FocusNode _focusNode = FocusNode();
   late final TextEditingController _textController =
       TextEditingController(text: widget.values[widget.initialPage]);
   late List<Widget> pagesList = List.generate(
       widget.values.length,
       (index) => Center(
-            child: Text(widget.values[index]),
+            child: Text(
+              widget.values[index],
+              style: widget.textStyle?.copyWith(fontSize: height / 2) ??
+                  Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontSize: height / 2),
+            ),
           ));
-
   late Widget scrollInputTextField = ScrollInputTextField(
     controller: _textController,
     // showCursor: true,
@@ -56,12 +62,14 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
     focusNode: _focusNode,
 
     decoration: const InputDecoration(
+        enabledBorder: InputBorder.none,
         hoverColor: Colors.transparent,
         filled: false,
         border: InputBorder.none,
+        // focusedBorder: OutlineInputBorder(),
         fillColor: Colors.transparent),
     onTapOutside: (event) {
-      _focusNode.unfocus();
+      // _focusNode.unfocus();
       isEditMode = false;
       setState(() {});
     },
@@ -71,7 +79,8 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
       }
     },
     pageController: pageController,
-    style: widget.textStyle ?? Theme.of(context).textTheme.bodyMedium,
+    style: widget.textStyle?.copyWith(fontSize: height / 2) ??
+        Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: height / 2),
     values: widget.values,
   );
 
@@ -114,67 +123,117 @@ class _ScrollInputV3State extends State<ScrollInputV3> {
           Flexible(
             flex: 2,
             fit: FlexFit.tight,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Center(
-                  child: Builder(builder: (context) {
-                    return LayoutBuilder(builder: (context, constr) {
-                      height = constr.maxHeight;
-
-                      return PageView(
-                        reverse: widget.reverse,
-                        onPageChanged: (page) {
-                          currentPage = page.toInt();
-                          setState(() {});
-                          String string = widget.values[page.toInt()];
-                          widget.onValueChanged?.call(string);
-                        },
-                        allowImplicitScrolling: false,
-                        scrollDirection: Axis.vertical,
-                        controller: pageController,
-                        children: pagesList,
-                      );
-                    });
-                  }),
-                ),
-                Container(
-                  // color: Colors.green,
-                  child: GestureDetector(
+            child: LayoutBuilder(builder: (context, constr) {
+              height = constr.maxHeight;
+              print('height = $height');
+              print(
+                  'fontsize = ${Theme.of(context).textTheme.bodyMedium!.fontSize.toString()}');
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  Center(child: Builder(builder: (context) {
+                    return PageView(
+                      reverse: widget.reverse,
+                      onPageChanged: (page) {
+                        currentPage = page.toInt();
+                        setState(() {});
+                        String string = widget.values[page.toInt()];
+                        widget.onValueChanged?.call(string);
+                      },
+                      allowImplicitScrolling: false,
+                      scrollDirection: Axis.vertical,
+                      controller: pageController,
+                      children: List.generate(
+                          widget.values.length,
+                          (index) => Center(
+                                child: Text(
+                                  widget.values[index],
+                                  style: widget.textStyle
+                                          ?.copyWith(fontSize: height / 2) ??
+                                      Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(fontSize: height / 2),
+                                ),
+                              )),
+                    );
+                  })),
+                  GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: _onTap,
                     child: Visibility(
                         visible: isEditMode,
                         child: Center(
-                          child: Container(
-                            // height: (height ?? 10) * 0.55,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  transform: const GradientRotation(1.57079633),
-                                  stops: const [
-                                    0.2,
-                                    0.3,
-                                    0.5,
-                                    0.7,
-                                    0.8
-                                  ],
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withOpacity(0.9),
-                                    Colors.black,
-                                    Colors.black.withOpacity(0.9),
-                                    Colors.transparent
-                                  ]),
-                            ),
-                            // color: Colors.black,
-                            child: Center(child: scrollInputTextField),
+                          child: Stack(
+                            children: [
+                              Container(
+                                // height: (height ?? 10) * 0.55,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(15)),
+                                  border: Border.all(color: Colors.transparent),
+                                  gradient: LinearGradient(
+                                      transform:
+                                          const GradientRotation(1.57079633),
+                                      stops: const [
+                                        0.1,
+                                        0.15,
+                                        0.5,
+                                        0.85,
+                                        0.9
+                                      ],
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.7),
+                                        Colors.black,
+                                        Colors.black.withOpacity(0.7),
+                                        Colors.transparent,
+                                      ]),
+                                ),
+                                // color: Colors.black,
+                                child: Center(
+                                    child: ScrollInputTextField(
+                                  controller: _textController,
+                                  // showCursor: true,
+                                  // textAlign: TextAlign.center,
+                                  focusNode: _focusNode,
+
+                                  decoration: const InputDecoration(
+                                      enabledBorder: InputBorder.none,
+                                      hoverColor: Colors.transparent,
+                                      filled: false,
+                                      border: InputBorder.none,
+                                      // focusedBorder: OutlineInputBorder(),
+                                      fillColor: Colors.transparent),
+                                  onTapOutside: (event) {
+                                    // _focusNode.unfocus();
+                                    isEditMode = false;
+                                    setState(() {});
+                                  },
+                                  onValueChanged: (string) {
+                                    if (string != '') {
+                                      _onChanged(string);
+                                    }
+                                  },
+                                  pageController: pageController,
+                                  style: widget.textStyle
+                                          ?.copyWith(fontSize: height / 2) ??
+                                      Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(fontSize: height / 2),
+                                  values: widget.values,
+                                )),
+                              ),
+                            ],
                           ),
                         )),
                   ),
-                ),
-                const _ForeGround(),
-              ],
-            ),
+                  const _ForeGround(),
+                ],
+              );
+            }),
           ),
           Flexible(
               flex: 1,
@@ -267,7 +326,7 @@ class ScrollInputTextField extends TextField {
       super.onTapOutside,
       super.style,
       super.textAlign = TextAlign.center,
-      super.keyboardType = TextInputType.number,
+      super.keyboardType = TextInputType.datetime,
       required super.focusNode,
       super.onChanged,
       super.decoration,
