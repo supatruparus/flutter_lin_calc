@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_input/scroll_input.dart';
 import 'package:flutter_lin_calc/utils/extensions.dart';
-import 'package:flutter_lin_calc/widgets/scroll_input.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../consts/strings.dart';
 import '../data/lin_calc_app_rep.dart';
